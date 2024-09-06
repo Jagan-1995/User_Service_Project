@@ -18,7 +18,7 @@ public class BaseModel {
     private Long id;
     private Date createdAt;
     private Date modifiedAt;
-    private boolean isDeleted; // initially false
+    private boolean deleted; // initially false
 }
 
 /*

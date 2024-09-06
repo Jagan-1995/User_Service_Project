@@ -1,11 +1,12 @@
 package dev.jagan.userservice.controllers;
 
 
-import dev.jagan.userservice.dtos.ResponseStatus;
-import dev.jagan.userservice.dtos.SignupRequestDto;
-import dev.jagan.userservice.dtos.SignupResponseDto;
+import dev.jagan.userservice.dtos.*;
+import dev.jagan.userservice.models.Token;
 import dev.jagan.userservice.models.User;
 import dev.jagan.userservice.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +52,25 @@ public class UserController {
 
 
         return signupResponseDto;
+    }
+
+    @PostMapping("/login")
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
+        Token token = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setEmail(token.getUser().getEmail());
+        loginResponseDto.setTokenValue(token.getValue());
+        loginResponseDto.setExpiryAt(token.getExpiryAt());
+
+        return loginResponseDto;
+
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto logoutRequestDto){
+        userService.logout(logoutRequestDto.getToken());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
