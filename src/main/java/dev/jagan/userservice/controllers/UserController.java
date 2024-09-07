@@ -2,15 +2,14 @@ package dev.jagan.userservice.controllers;
 
 
 import dev.jagan.userservice.dtos.*;
+import dev.jagan.userservice.dtos.ResponseStatus;
 import dev.jagan.userservice.models.Token;
 import dev.jagan.userservice.models.User;
 import dev.jagan.userservice.services.UserService;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users") // localhost:8080/users/...
@@ -73,4 +72,21 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/validate/{token}") //  /users/validate/agfakhhkh
+    public UserDto validateToken(@PathVariable("token") @NonNull String token){
+        return UserDto.from(userService.validateToken(token));
+
+    }
+
+
 }
+
+/*
+token, request -> product service
+calling user service to validate the token
+Product service has an admin page
+
+/admin/{token} -> Product service
+token is valid? should also the role of the user
+ */

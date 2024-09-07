@@ -12,7 +12,11 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
    @Override
    Token save(Token token);
 
-//   Optional<Token> findByValueAndDeleted(String token, boolean deleted);
+   Optional<Token> findByValueAndDeletedEqualsAndExpiryAtGreaterThan(String value, boolean isDeleted, Date expiryGreaterThan);
 
    Optional<Token> findByValueAndDeletedEquals(String token, boolean deleted);
 }
+
+/*
+5 august 2024 9 pm hdaafdgdretv
+ */
