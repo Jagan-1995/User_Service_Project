@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import dev.jagan.userservice.security.models.Client;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -24,6 +25,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 @Component
+
 public class JpaRegisteredClientRepository implements RegisteredClientRepository {
     private final ClientRepository clientRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();

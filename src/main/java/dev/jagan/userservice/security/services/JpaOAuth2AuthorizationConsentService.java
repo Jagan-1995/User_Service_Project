@@ -6,6 +6,7 @@ import java.util.Set;
 
 import dev.jagan.userservice.security.models.AuthorizationConsent;
 import dev.jagan.userservice.security.repositories.AuthorizationConsentRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +21,8 @@ import org.springframework.util.StringUtils;
 @Component
 public class JpaOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
     private final AuthorizationConsentRepository authorizationConsentRepository;
+
+
     private final RegisteredClientRepository registeredClientRepository;
 
     public JpaOAuth2AuthorizationConsentService(AuthorizationConsentRepository authorizationConsentRepository, RegisteredClientRepository registeredClientRepository) {

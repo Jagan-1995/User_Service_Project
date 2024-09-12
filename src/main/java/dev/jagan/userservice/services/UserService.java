@@ -1,10 +1,14 @@
 package dev.jagan.userservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.jagan.userservice.dtos.SendEmailEventDto;
 import dev.jagan.userservice.models.Token;
 import dev.jagan.userservice.models.User;
 import dev.jagan.userservice.repositories.TokenRepository;
 import dev.jagan.userservice.repositories.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,24 +23,48 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserRepository userRepository;
     private TokenRepository tokenRepository;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private ObjectMapper objectMapper;
 
     public UserService(BCryptPasswordEncoder bCryptPasswordEncoder,
                        UserRepository userRepository,
-                       TokenRepository tokenRepository){
+                       TokenRepository tokenRepository,
+                       KafkaTemplate kafkaTemplate,
+                       ObjectMapper objectMapper){
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public User signup(String fullName,
                        String email,
-                       String password){
+                       String password) throws JsonProcessingException {
         User user = new User();
         user.setName(fullName);
         user.setEmail(email);
         user.setHashedPassword(bCryptPasswordEncoder.encode(password));
 
         userRepository.save(user);
+        /*
+        I want to publish this event to the message queue - kafka
+         */
+        SendEmailEventDto emailEventDto = new SendEmailEventDto();
+        emailEventDto.setTo(email);
+        emailEventDto.setFrom("jackjagan1995@gmail.com");
+        emailEventDto.setSubject("Welcome To Scaler Project of Email Service");
+        emailEventDto.setBody("Welcome, we are very happy and excited to part of the Email Service Project");
+
+
+            kafkaTemplate.send(
+                    "send_Email",
+                    objectMapper.writeValueAsString(emailEventDto)
+            );
+
+
+        // Kafka queue - [{send_Email, {"to" : "", from : "", "body" : ""}}]
+
         return user;
     }
 
