@@ -31,6 +31,8 @@ public class UserController {
 
     @PostMapping("/signup")
     public SignupResponseDto signup(@RequestBody SignupRequestDto signupRequestDto){
+
+
         String name = signupRequestDto.getName();
         String email = signupRequestDto.getEmail();
         String password = signupRequestDto.getPassword();
@@ -39,10 +41,15 @@ public class UserController {
         // return the user response dto back to the client
 
         SignupResponseDto signupResponseDto = new SignupResponseDto();
+
         try{
-            User user = userService.signup(name, email, password);
+            User user = userService.signup(
+                    name, email, password);
+
+
             signupResponseDto.setEmail(user.getEmail());
             signupResponseDto.setName(user.getName());
+
             signupResponseDto.setResponseStatus(ResponseStatus.SUCCESS);
         }
         catch (Exception ex){
